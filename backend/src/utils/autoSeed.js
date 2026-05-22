@@ -1,0 +1,97 @@
+import { User } from '../models/User.js';
+import { Project } from '../models/Project.js';
+import { Task } from '../models/Task.js';
+import { Comment } from '../models/Comment.js';
+import { Notification } from '../models/Notification.js';
+
+export const autoSeedIfEmpty = async () => {
+  const count = await User.countDocuments();
+  if (count > 0) return;
+
+  console.log('Seeding demo data...');
+  const admin = await User.create({
+    name: 'Demo Admin',
+    email: 'admin@demo.com',
+    password: 'Admin123!',
+    role: 'admin',
+  });
+  const member = await User.create({
+    name: 'Demo Member',
+    email: 'member@demo.com',
+    password: 'Member123!',
+    role: 'member',
+  });
+  const member2 = await User.create({
+    name: 'Alex Johnson',
+    email: 'alex@demo.com',
+    password: 'Member123!',
+    role: 'member',
+  });
+
+  const project = await Project.create({
+    name: 'Website Redesign',
+    description: 'Complete overhaul of company website with modern UI',
+    members: [admin._id, member._id, member2._id],
+    deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+    status: 'active',
+    createdBy: admin._id,
+  });
+
+  await Project.create({
+    name: 'Mobile App Launch',
+    description: 'iOS and Android app development and release',
+    members: [admin._id, member._id],
+    deadline: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000),
+    status: 'planning',
+    createdBy: admin._id,
+  });
+
+  const tasks = await Task.insertMany([
+    {
+      title: 'Design homepage mockup',
+      description: 'Create Figma designs for new homepage',
+      assignedTo: member._id,
+      priority: 'high',
+      status: 'in_progress',
+      dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      project: project._id,
+      createdBy: admin._id,
+      activity: [{ user: admin._id, action: 'created', details: 'Task created' }],
+    },
+    {
+      title: 'Set up CI/CD pipeline',
+      assignedTo: member2._id,
+      priority: 'medium',
+      status: 'todo',
+      dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+      project: project._id,
+      createdBy: admin._id,
+      activity: [{ user: admin._id, action: 'created', details: 'Task created' }],
+    },
+    {
+      title: 'Write API documentation',
+      assignedTo: member._id,
+      priority: 'low',
+      status: 'completed',
+      project: project._id,
+      createdBy: admin._id,
+      activity: [{ user: admin._id, action: 'created', details: 'Task created' }],
+    },
+  ]);
+
+  await Comment.create({
+    content: 'Started working on the hero section design.',
+    user: member._id,
+    task: tasks[0]._id,
+  });
+
+  await Notification.create({
+    user: member._id,
+    type: 'task_assigned',
+    message: 'You were assigned: "Design homepage mockup"',
+    relatedId: tasks[0]._id,
+    relatedModel: 'Task',
+  });
+
+  console.log('Demo data ready: admin@demo.com / Admin123! | member@demo.com / Member123!');
+};
