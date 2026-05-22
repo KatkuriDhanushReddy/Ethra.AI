@@ -1,4 +1,6 @@
-# Team Task Manager
+# Ethra.AI — Team Task Manager
+
+Repository: [github.com/KatkuriDhanushReddy/Ethra.AI](https://github.com/KatkuriDhanushReddy/Ethra.AI)
 
 A production-ready full-stack web application for teams to manage projects, assign tasks, and track work progress with role-based access control (RBAC).
 
@@ -197,3 +199,4 @@ Connect both Railway services to this repository.
 ## License
 
 MIT
+
