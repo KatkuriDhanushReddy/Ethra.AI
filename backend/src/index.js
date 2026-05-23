@@ -46,6 +46,8 @@ app.use(express.urlencoded({ extended: true }));
 const uploadPath = process.env.UPLOAD_DIR || 'uploads';
 app.use('/uploads', express.static(path.join(process.cwd(), uploadPath)));
 
+app.get('/', (_, res) => res.send('Ethra AI Backend Running Successfully'));
+
 app.get('/api/health', (_, res) => res.json({ success: true, message: 'API is running' }));
 
 app.use('/api/auth', authRoutes);
