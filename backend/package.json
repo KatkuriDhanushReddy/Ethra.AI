@@ -1,12 +1,13 @@
 {
-  "name": "team-task-manager-api",
+  "name": "backend",
   "version": "1.0.0",
-  "description": "Team Task Manager REST API",
+  "description": "Team Task Manager REST API (Express + MongoDB)",
   "main": "src/index.js",
   "type": "module",
   "scripts": {
     "start": "node src/index.js",
     "dev": "node --watch src/index.js",
+    "build": "echo Backend ready",
     "seed": "node src/seed.js"
   },
   "engines": {
@@ -19,9 +20,11 @@
     "express": "^4.21.0",
     "express-validator": "^7.2.0",
     "jsonwebtoken": "^9.0.2",
-    "mongodb-memory-server": "^10.4.3",
     "mongoose": "^8.7.0",
     "multer": "^1.4.5-lts.1",
     "socket.io": "^4.8.0"
+  },
+  "devDependencies": {
+    "mongodb-memory-server": "^10.4.3"
   }
 }

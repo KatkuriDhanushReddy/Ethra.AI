@@ -123,6 +123,42 @@ App runs at `http://localhost:5173`
 
 See [API.md](./API.md) for full documentation.
 
+## Render Deployment
+
+Full guide: [RENDER-DEPLOY.md](./RENDER-DEPLOY.md)
+
+### Backend (Web Service) — required
+
+| Setting | Value |
+|---------|--------|
+| **Root Directory** | `backend` |
+| **Build Command** | `npm install` |
+| **Start Command** | `npm start` |
+
+**Environment variables:** `MONGODB_URI`, `JWT_SECRET`, `NODE_ENV=production`, `CLIENT_URL` (your frontend URL)
+
+Health check: `https://YOUR-SERVICE.onrender.com/api/health`
+
+### Frontend (Static Site) — recommended on Render
+
+| Setting | Value |
+|---------|--------|
+| **Root Directory** | `frontend` |
+| **Build Command** | `npm install && npm run build` |
+| **Publish Directory** | `dist` |
+
+**Environment variables:** `VITE_API_URL` = `https://YOUR-API.onrender.com/api`, `VITE_SOCKET_URL` = `https://YOUR-API.onrender.com`
+
+### One-click Blueprint
+
+Render Dashboard → **New** → **Blueprint** → select repo (uses root `render.yaml`).
+
+### Common error: `Missing script: "start"`
+
+Set **Root Directory** to `backend` or `frontend` — do not leave it empty.
+
+---
+
 ## Railway Deployment
 
 ### MongoDB Atlas
@@ -150,6 +186,28 @@ See [API.md](./API.md) for full documentation.
    - `VITE_SOCKET_URL=https://<backend-url>`
 3. Build uses `nixpacks.toml` / `npm run build` + `serve`
 4. Update backend `CLIENT_URL` to include frontend URL
+
+### Frontend on Vercel
+
+Deploy from the **repository root** (not the `frontend` folder). `vercel.json` installs frontend deps and builds to `frontend/dist`.
+
+**Vercel project settings:**
+
+| Setting | Value |
+|---------|--------|
+| Root Directory | `.` (repo root) |
+| Install Command | `npm install --prefix frontend` (auto from `vercel.json`) |
+| Build Command | `npm run build --prefix frontend` |
+| Output Directory | `frontend/dist` |
+
+**Environment variables** (Vercel → Settings → Environment Variables):
+
+| Variable | Example |
+|----------|---------|
+| `VITE_API_URL` | `https://your-backend.up.railway.app/api` |
+| `VITE_SOCKET_URL` | `https://your-backend.up.railway.app` |
+
+The API must be deployed separately (e.g. Railway). Update backend `CLIENT_URL` to include your Vercel URL.
 
 ### Post-deploy
 

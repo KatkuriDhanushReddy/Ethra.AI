@@ -62,14 +62,21 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 
 const start = async () => {
-  await connectDB();
-  if (process.env.NODE_ENV !== 'production') {
-    await autoSeedIfEmpty();
+  if (!process.env.MONGODB_URI) {
+    console.error(
+      'FATAL: MONGODB_URI is not set. Add it in Render → Environment (MongoDB Atlas connection string).'
+    );
+    process.exit(1);
   }
-  server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+  await connectDB();
+  await autoSeedIfEmpty();
+  server.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`Health: http://localhost:${PORT}/api/health`);
+  });
 };
 
 start().catch((err) => {
-  console.error(err);
+  console.error('Failed to start server:', err.message || err);
   process.exit(1);
 });

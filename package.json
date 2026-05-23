@@ -1,12 +1,26 @@
 {
-  "name": "team-task-manager",
+  "name": "ethara-ai",
   "version": "1.0.0",
   "private": true,
+  "description": "Ethra.AI — Team Task Manager (Express API + Vite React)",
+  "engines": {
+    "node": ">=18 <=22"
+  },
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
   "scripts": {
-    "install:all": "npm install --prefix backend && npm install --prefix frontend",
-    "dev:backend": "npm run dev --prefix backend",
-    "dev:frontend": "npm run dev --prefix frontend",
-    "seed": "npm run seed --prefix backend",
-    "build": "npm run build --prefix frontend"
+    "start": "npm run start --workspace=backend",
+    "build": "npm run build --workspace=frontend",
+    "build:api": "npm install --workspace=backend",
+    "build:web": "npm run build --workspace=frontend",
+    "start:api": "npm run start --workspace=backend",
+    "start:web": "npm run start --workspace=frontend",
+    "dev": "npm run dev --workspace=backend",
+    "dev:api": "npm run dev --workspace=backend",
+    "dev:web": "npm run dev --workspace=frontend",
+    "seed": "npm run seed --workspace=backend",
+    "install:all": "npm install"
   }
 }
