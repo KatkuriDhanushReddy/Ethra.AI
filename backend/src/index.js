@@ -62,10 +62,12 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 
 const start = async () => {
-  if (!process.env.MONGODB_URI) {
-    console.error(
-      'FATAL: MONGODB_URI is not set. Add it in Render → Environment (MongoDB Atlas connection string).'
-    );
+  if (!process.env.MONGODB_URI?.trim()) {
+    console.error('FATAL: MONGODB_URI is not set.');
+    console.error('Render → open your BACKEND Web Service (Root Directory: backend) → Environment');
+    console.error('Add key exactly: MONGODB_URI  (not MONGO_URI, not in frontend/static site)');
+    console.error('Value: mongodb+srv://USER:PASSWORD@cluster0....mongodb.net/team-task-manager?...');
+    console.error('Then Save Changes and wait for redeploy.');
     process.exit(1);
   }
   await connectDB();

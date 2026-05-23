@@ -1,4 +1,51 @@
-# Fix Render "Exited with status 1"
+# Fix Render deploy errors
+
+## Error: `package.json` does not contain a valid "start" script
+
+Your repo **already has** correct `start` scripts. Render fails when the **wrong service type** or **wrong Root Directory** is used.
+
+| Folder | Type on Render | Start command |
+|--------|----------------|---------------|
+| `backend/` | **Web Service** | `npm start` → `node src/index.js` |
+| `frontend/` | **Static Site** | *(none — use Publish Directory `dist`)* |
+| repo root | **Web Service** (optional) | `npm start` → runs backend via workspaces |
+
+**Do not** deploy `frontend/` as a Web Service unless you intentionally use `npm start` (serves `dist/`). Prefer **Static Site** for Vite.
+
+### Your exact scripts (already in GitHub)
+
+**`backend/package.json`**
+
+```json
+"scripts": {
+  "start": "node src/index.js",
+  "dev": "node --watch src/index.js",
+  "build": "echo Backend ready",
+  "seed": "node src/seed.js"
+}
+```
+
+**`frontend/package.json`** — use Static Site on Render; no `npm start` required:
+
+```json
+"scripts": {
+  "dev": "vite",
+  "build": "vite build",
+  "preview": "vite preview"
+}
+```
+
+**Root `package.json`** (only if Root Directory is empty):
+
+```json
+"scripts": {
+  "start": "npm run start --workspace=backend"
+}
+```
+
+---
+
+## Error: "Exited with status 1" / `audited 1 package`
 
 Your logs show `audited 1 package` — Render is building from the **repo root** without installing `backend/` dependencies.
 
