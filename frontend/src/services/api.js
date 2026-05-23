@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { getApiBaseUrl } from '../config/env.js';
 
-const API_URL = import.meta.env.VITE_API_URL || '/api';
+const API_URL = getApiBaseUrl();
 
 const api = axios.create({
   baseURL: API_URL,
@@ -16,11 +17,31 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (res) => res,
   (err) => {
-    const message = err.response?.data?.message || err.message || 'Request failed';
+    const status = err.response?.status;
+    const method = err.config?.method?.toUpperCase() || 'REQUEST';
+    const path = err.config?.url || '';
+    const fullUrl = `${err.config?.baseURL || API_URL}${path}`;
+
+    console.error('[API Error]', {
+      method,
+      url: fullUrl,
+      status: status ?? 'network',
+      message: err.response?.data?.message || err.message,
+      data: err.response?.data,
+    });
+
+    const message =
+      err.response?.data?.message ||
+      (status === 404
+        ? `API not found (${fullUrl}). Check VITE_API_URL on Vercel.`
+        : err.message) ||
+      'Request failed';
+
     return Promise.reject(new Error(message));
   }
 );
 
+export { API_URL };
 export default api;
 
 export const authAPI = {

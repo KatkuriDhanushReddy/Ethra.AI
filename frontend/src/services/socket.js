@@ -1,6 +1,7 @@
 import { io } from 'socket.io-client';
+import { getSocketUrl } from '../config/env.js';
 
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || '';
+const SOCKET_URL = getSocketUrl();
 
 let socket = null;
 
